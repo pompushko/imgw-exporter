@@ -1,0 +1,233 @@
+{
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": "-- Grafana --",
+          "enable": true,
+          "hide": true,
+          "iconColor": "#979797",
+          "name": "Annotations & Alerts",
+          "type": "dashboard"
+        }
+      ]
+    },
+    "description": "Dashboard for monitoring hydro station data",
+    "editable": true,
+    "gnetId": null,
+    "graphTooltip": 0,
+    "id": null,
+    "iteration": 1623439493899,
+    "links": [],
+    "panels": [
+      {
+        "datasource": "Prometheus",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "orange",
+                  "value": 50
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 5,
+          "w": 6,
+          "x": 0,
+          "y": 0
+        },
+        "id": 1,
+        "options": {
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showThresholdLabels": false,
+          "showThresholdMarkers": true
+        },
+        "pluginVersion": "7.5.5",
+        "targets": [
+          {
+            "expr": "current_state_value{station_id=\"$station_id\"}",
+            "interval": "",
+            "legendFormat": "",
+            "refId": "A"
+          }
+        ],
+        "title": "Current State Value",
+        "type": "gauge"
+      },
+      {
+        "datasource": "Prometheus",
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [
+              {
+                "options": {
+                  "0": {
+                    "color": "green",
+                    "index": 0,
+                    "text": "Normal"
+                  },
+                  "1": {
+                    "color": "orange",
+                    "index": 1,
+                    "text": "Warning"
+                  },
+                  "2": {
+                    "color": "red",
+                    "index": 2,
+                    "text": "Critical"
+                  }
+                },
+                "type": "value"
+              }
+            ],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "orange",
+                  "value": 1
+                },
+                {
+                  "color": "red",
+                  "value": 2
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 5,
+          "w": 6,
+          "x": 6,
+          "y": 0
+        },
+        "id": 2,
+        "options": {},
+        "pluginVersion": "7.5.5",
+        "targets": [
+          {
+            "expr": "status_metric{station_id=\"$station_id\"}",
+            "interval": "",
+            "legendFormat": "",
+            "refId": "A"
+          }
+        ],
+        "title": "Status",
+        "type": "stat"
+      },
+      {
+        "datasource": "Prometheus",
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 9,
+          "w": 12,
+          "x": 0,
+          "y": 5
+        },
+        "id": 3,
+        "options": {
+          "legend": {
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "single"
+          }
+        },
+        "targets": [
+          {
+            "expr": "current_state_value{station_id=\"$station_id\"}",
+            "interval": "",
+            "legendFormat": "Current State Value",
+            "refId": "A"
+          },
+          {
+            "expr": "alarm_value{station_id=\"$station_id\"}",
+            "interval": "",
+            "legendFormat": "Alarm Value",
+            "refId": "B"
+          },
+          {
+            "expr": "warning_value{station_id=\"$station_id\"}",
+            "interval": "",
+            "legendFormat": "Warning Value",
+            "refId": "C"
+          }
+        ],
+        "title": "Water Level with Thresholds",
+        "type": "timeseries"
+      }
+    ],
+    "refresh": "1m",
+    "schemaVersion": 27,
+    "style": "dark",
+    "tags": ["hydro", "exporter"],
+    "templating": {
+      "list": [
+        {
+          "current": {},
+          "datasource": "Prometheus",
+          "definition": "label_values(current_state_value, station_id)",
+          "hide": 0,
+          "includeAll": true,
+          "label": "Station ID",
+          "multi": true,
+          "name": "station_id",
+          "options": [],
+          "query": {
+            "query": "label_values(current_state_value, station_id)",
+            "refId": "StandardVariableQuery"
+          },
+          "refresh": 1,
+          "regex": "",
+          "skipUrlSync": false,
+          "type": "query"
+        }
+      ]
+    },
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "",
+    "title": "Hydro Station Monitoring",
+    "uid": null,
+    "version": 1
+  }
+  
