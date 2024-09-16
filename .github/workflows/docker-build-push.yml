@@ -1,4 +1,4 @@
-name: ci
+name: Build & Push IMGW exporter multi platform Docker image
 
 on:
   workflow_dispatch:
