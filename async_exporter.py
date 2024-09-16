@@ -103,8 +103,8 @@ async def fetch_data():
 async def schedule_fetch():
     while True:
         now = datetime.utcnow()
-        # Calculate time until the next 10-minute interval
-        next_run = (now.replace(second=0, microsecond=0) + timedelta(minutes=10 - now.minute % 10))
+        # Calculate time until the next 5-minute interval
+        next_run = (now.replace(second=0, microsecond=0) + timedelta(minutes=5 - now.minute % 5))
         wait_time = (next_run - now).total_seconds()
         logger.info(f"Next data update at {next_run} (in {wait_time} seconds)")
         await asyncio.sleep(wait_time)
