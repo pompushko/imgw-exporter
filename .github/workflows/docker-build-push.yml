@@ -1,7 +1,10 @@
 name: Build & Push IMGW exporter multi platform Docker image
 
 on:
+  workflow_dispatch:
   push:
+    branches:
+      - main
 
 env:
   REGISTRY_IMAGE: pompushko/imgw-exporter
