@@ -1,3 +1,5 @@
+[![Docker](https://badgen.net/badge/icon/docker?icon=docker&label)](https://hub.docker.com/r/pompushko/imgw-exporter)
+
 # Prometheus Exporter for IMGW-PIB (Institute of Meteorology and Water Management)
 
 This project is a **Prometheus Exporter for IMGW-PIB** designed to collect and expose meteorological and hydrological data from the **Institute of Meteorology and Water Management - National Research Institute (IMGW-PIB)**. The exporter fetches real-time data provided by IMGW on weather conditions, water levels, and other environmental metrics across Poland, making this information available for monitoring and alerting in Prometheus.
