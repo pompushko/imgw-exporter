@@ -1,0 +1,77 @@
+networks:
+  grafnet:
+    name: grafnet
+    external: false
+    driver: bridge
+
+services:
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./provisioning/:/etc/grafana/provisioning/
+    networks:
+      - grafnet
+    depends_on:
+      - prometheus
+    env_file:
+      - ./config.monitoring
+    restart: always
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--web.external-url=https://prometheus.domain.com'
+    ports:
+      - 9090:9090
+    links:
+      - alertmanager:alertmanager
+      - imgw-exporter:imgw-exporter
+    depends_on:
+      - imgw-exporter
+    networks:
+      - grafnet
+    restart: always
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    ports:
+      - 9093:9093
+    volumes:
+      - ./alertmanager/:/etc/alertmanager/
+    networks:
+      - grafnet
+    restart: always
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+      - '--storage.path=/alertmanager'
+      - "--web.external-url=https://alertmanager.domain.com"
+
+  imgw-exporter:
+    image: pompushko/imgw-exporter:latest
+    environment:
+      - STATION_ID=151160170,151170030,151160190,150170040,151170050
+    ports:
+      - "9634:8000"
+    networks:
+      - grafnet
+    restart: always
+    deploy:
+      mode: global
+
+volumes:
+  grafana-data:
+    name: grafana-data
+    external: false
+  prometheus-data:
+    name: prometheus-data
+    external: false

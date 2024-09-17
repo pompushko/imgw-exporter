@@ -2,7 +2,7 @@ import os
 import asyncio
 import httpx
 from datetime import datetime, timedelta
-from prometheus_client import Gauge, make_asgi_app, CollectorRegistry, CONTENT_TYPE_LATEST, generate_latest
+from prometheus_client import Gauge, CollectorRegistry, CONTENT_TYPE_LATEST, generate_latest
 import uvicorn
 from fastapi import FastAPI, Request, Response
 from contextlib import asynccontextmanager
@@ -74,6 +74,8 @@ async def fetch_data():
                     station_id = data.get('id', 'unknown')
                     station_name = status.get('description', 'unknown')
 
+                    state_code = data.get('stateCode', 'unknown')
+
                     current_state = status.get('currentState', {})
                     current_value = current_state.get('value', 0)
 
@@ -83,11 +85,11 @@ async def fetch_data():
                     warning_val = status.get('warningValue', 0)
 
                     # Update metrics
-                    metrics['current_state_value'].labels(station_id=station_id, station_name=station_name).set(current_value)
-                    metrics['trend'].labels(station_id=station_id, station_name=station_name).set(trend_value)
-                    metrics['status_metric'].labels(station_id=station_id, station_name=station_name).set(status_value)
-                    metrics['alarm_value'].labels(station_id=station_id, station_name=station_name).set(alarm_val)
-                    metrics['warning_value'].labels(station_id=station_id, station_name=station_name).set(warning_val)
+                    metrics['current_state_value'].labels(station_id=station_id, station_name=station_name, state_code=state_code).set(current_value)
+                    metrics['trend'].labels(station_id=station_id, station_name=station_name, state_code=state_code).set(trend_value)
+                    metrics['status_metric'].labels(station_id=station_id, station_name=station_name, state_code=state_code).set(status_value)
+                    metrics['alarm_value'].labels(station_id=station_id, station_name=station_name, state_code=state_code).set(alarm_val)
+                    metrics['warning_value'].labels(station_id=station_id, station_name=station_name, state_code=state_code).set(warning_val)
 
                     logger.info(f"Metrics updated for station {station_id} - {station_name}")
 
@@ -116,11 +118,11 @@ async def lifespan(app: FastAPI):
     global metrics
     # Define metrics within the lifespan to ensure they're registered only once
     metrics = {
-        'current_state_value': Gauge('current_state_value', 'Current state value', ['station_id', 'station_name'], registry=registry),
-        'trend': Gauge('trend', 'Trend', ['station_id', 'station_name'], registry=registry),
-        'status_metric': Gauge('status', 'Status', ['station_id', 'station_name'], registry=registry),
-        'alarm_value': Gauge('alarm_value', 'Alarm value', ['station_id', 'station_name'], registry=registry),
-        'warning_value': Gauge('warning_value', 'Warning value', ['station_id', 'station_name'], registry=registry),
+        'current_state_value': Gauge('current_state_value', 'Current state value', ['station_id', 'station_name', 'state_code'], registry=registry),
+        'trend': Gauge('trend', 'Trend', ['station_id', 'station_name', 'state_code'], registry=registry),
+        'status_metric': Gauge('status', 'Status', ['station_id', 'station_name', 'state_code'], registry=registry),
+        'alarm_value': Gauge('alarm_value', 'Alarm value', ['station_id', 'station_name', 'state_code'], registry=registry),
+        'warning_value': Gauge('warning_value', 'Warning value', ['station_id', 'station_name', 'state_code'], registry=registry),
     }
 
     # Startup code
