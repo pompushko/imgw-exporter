@@ -17,7 +17,7 @@ This project aims to provide a reliable and efficient way to monitor weather and
   imgw-exporter:
     image: pompushko/imgw-exporter:latest
     environment:
-      - STATION_ID=151160170,151170030,151160190,150170040,151170050
+      - STATION_ID=151160170,151170030,151160190,150170040,151170050,151160230
     ports:
       - "9634:8000"
     restart: always
